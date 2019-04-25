@@ -1,0 +1,22 @@
+<ul>
+	{{#each tutorials}}
+		<li>
+			{{#if description}}
+				<details open>
+					<summary><h{{level}}><a href="{{relativeURL dest}}" title="{{title}}">{{{title}}}</a></h{{level}}></summary>
+					{{#markdown}}
+					{{{description}}}
+					{{/markdown}}
+				</details>
+			{{else}}
+				<h{{../level}}><a href="{{relativeURL dest}}" title="{{title}}">{{{title}}}</a></h{{../level}}>
+			{{/if}}
+
+			{{#ifCond ../level '<' 6 }}
+				{{#if children}}
+					{{> tutorials-tree tutorials=children level=(math ../level '+' 1) }}
+				{{/if}}
+			{{/ifCond}}
+		</li>
+	{{/each}}
+</ul>

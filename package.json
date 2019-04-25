@@ -1,0 +1,46 @@
+{
+  "name": "typedoc-plugin-tutorials",
+  "version": "0.0.0",
+  "description": "Integrate tutorials to your documentation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GerkinDev/typedoc-plugin-tutorials.git"
+  },
+  "author": {
+    "email": "agermain@ithoughts.io",
+    "name": "GerkinDev",
+    "url": "https://ithoughts.io/"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:watch": "npm run build -- --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "typedocplugin",
+    "tutorials",
+    "markdown",
+    "guides",
+    "documentation",
+    "demo",
+    "typedoc"
+  ],
+  "peerDependencies": {
+    "handlebars": "^4.0.6",
+    "lodash": "^4.17.0",
+    "typedoc": "^0.14.0"
+  },
+  "devDependencies": {
+    "@diaspora/dev-tslint": "^1.2.0",
+    "@types/handlebars": "^4.0.38",
+    "@types/lodash": "^4.14.123",
+    "@types/node": "^11.13.5",
+    "handlebars": "^4.0.6",
+    "tslint": "^5.16.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "typedoc": "^0.14.0",
+    "typescript": "^3.4.2"
+  }
+}
