@@ -1,41 +1,39 @@
 import { Application } from 'typedoc/dist/lib/application';
 import { AbstractComponent, Component, Option } from 'typedoc/dist/lib/utils';
+import { TutorialIndex } from './../models/tutorial-index';
 
 import { readdirSync } from 'fs';
-import { assign, cloneDeep, Dictionary, every, isEmpty, isPlainObject, isString, isUndefined, mapValues, omitBy, pick, transform, values } from 'lodash';
+import { assign, cloneDeep, Dictionary, every, isEmpty, isPlainObject, isString, isUndefined, mapKeys, mapValues, omitBy, pick, transform, values } from 'lodash';
 import { basename, extname, resolve } from 'path';
+import { UrlMapping } from 'typedoc/dist/lib/output/models/UrlMapping';
 import { ParameterHint, ParameterType } from 'typedoc/dist/lib/utils/options/declaration';
-import { PLUGIN_NAME } from './utils';
+import { inspect } from 'util';
+import { IPage } from '../models/i-page';
+import { Tutorial } from '../models/tutorial';
+import { PLUGIN_NAME } from '../utils';
 
 interface IInputDescription {
 	title: string;
+	description?: string;
 	children?: Dictionary<IInputDescription>;
 }
-interface IDescriptionResolved extends IInputDescription {
+export interface IDescriptionResolved extends IInputDescription {
 	source: string;
-	dest?: string;
-	parent?: IDescriptionResolved;
 	children?: Dictionary<IDescriptionResolved>;
-}
-export interface IDescription extends IDescriptionResolved {
-	canonicalName: string;
-	dest: string;
-	parent?: IDescription;
-	children?: Dictionary<IDescription>;
 }
 
 const isTutorialsDict = ( value: any ): value is Dictionary<IInputDescription> =>
 	every( values( value ), desc => isTutorialDesc( desc ) );
 const isTutorialDesc = ( value: any ): value is IInputDescription =>
-	isString( value.title ) && ( isUndefined( value.children ) || ( isPlainObject( value.children ) && isTutorialsDict( value.children ) ) );
+	isString( value.title ) &&
+	( isString( value.description ) || isUndefined( value.description ) ) &&
+	( isUndefined( value.children ) || ( isPlainObject( value.children ) && isTutorialsDict( value.children ) ) );
 
-@Component( { name: TutorialsIndex.componentName } )
-export class TutorialsIndex extends AbstractComponent<Application> {
-	public static readonly componentName = `${PLUGIN_NAME}-index`;
+@Component( { name: TutorialsScannerComponent.componentName } )
+export class TutorialsScannerComponent extends AbstractComponent<Application> {
+	public static readonly componentName = `${PLUGIN_NAME}-scanner`;
 
-	public readonly indexUrl = 'tutorials/index.html';
-
-	private tutorialsFlattened!: Dictionary<IDescription>;
+	private tutorialsFlattened!: Dictionary<IPage>;
 
 	private tutorialFiles!: string[];
 
@@ -61,11 +59,13 @@ export class TutorialsIndex extends AbstractComponent<Application> {
 	} )
 	private readonly tutorialsDirectory!: string;
 
+	private _index?: TutorialIndex;
+	public get index() {
+		return this._index;
+	}
+
 	public get allTutorials() {
 		return this.tutorialsFlattened;
-	}
-	public get tutorialsTree() {
-		return omitBy( this.tutorialsFlattened, tutorial => tutorial.parent );
 	}
 
 	public aggregateConfig() {
@@ -76,37 +76,34 @@ export class TutorialsIndex extends AbstractComponent<Application> {
 			throw new Error( 'Invalid `tutorials` option' );
 		}
 		this.tutorialFiles = readdirSync( this.tutorialsDirectory );
-		this.tutorialsFlattened = TutorialsIndex.flattenMergeTree( TutorialsIndex.resolveTutoDescs( this.tutorialsMap, this.tutorialFiles, this.tutorialsDirectory ) );
+		const tutoDescsResolved = TutorialsScannerComponent.resolveTutoDescs( this.tutorialsMap, this.tutorialFiles, this.tutorialsDirectory );
+		this._index = new TutorialIndex( tutoDescsResolved );
+		this.tutorialsFlattened = this.flattenTree();
 	}
 
-	private static flattenMergeTree(
-		descriptions: Dictionary<IDescriptionResolved>,
-		flattenedTutorialsAcc: Dictionary<IDescription> = {},
-		parents: string[] = [],
-	): Dictionary<IDescription> {
+	private flattenTree() {
+		if ( !this._index ) {
+			throw new Error();
+		}
+		return TutorialsScannerComponent.flattenTreeRec( this._index, {} );
+	}
+
+	private static flattenTreeRec(
+		page: IPage,
+		acc: Dictionary<IPage>,
+	): Dictionary<IPage> {
 		return transform(
-			descriptions,
-			( acc, desc, name ) => {
-				const resolvedName = [...parents, name].join( '/' );
+			page.getChildren(),
+			( subAcc, subPage ) => {
+				subAcc[subPage.path] = subPage;
 
-				if ( acc[resolvedName] ) {
-					throw new Error( `Double declaration of tutorial ${resolvedName}` );
-				}
-
-				// `desc` is modified by reference, so we assume that `parent` was already casted, and `children` will.
-				acc[resolvedName] = assign( desc, {
-					canonicalName: resolvedName,
-					children: desc.children as ( Dictionary<IDescription> | undefined ),
-					dest: `tutorials/${resolvedName}/index.html`,
-					parent: desc.parent as ( IDescription | undefined ),
-				} );
-				if ( desc.children ) {
-					return this.flattenMergeTree( desc.children, acc, parents.concat( name ) );
+				if ( subPage.hasChildren() ) {
+					return this.flattenTreeRec( subPage, subAcc );
 				} else {
-					return acc;
+					return subAcc;
 				}
 			},
-			flattenedTutorialsAcc,
+			acc,
 		);
 	}
 
@@ -114,7 +111,6 @@ export class TutorialsIndex extends AbstractComponent<Application> {
 		tutoDescs: Dictionary<IInputDescription> | undefined,
 		tutoFiles: string[],
 		baseTutoDir: string,
-		parent?: IDescriptionResolved,
 	): Dictionary<IDescriptionResolved> {
 		return mapValues( tutoDescs, ( desc, name ) => {
 			const candidateSourceFiles = tutoFiles.filter( tutoFile => tutoFile === name ||
@@ -133,10 +129,9 @@ export class TutorialsIndex extends AbstractComponent<Application> {
 				...desc,
 
 				children: undefined,
-				parent,
 				source: resolve( baseTutoDir, candidateSourceFiles[0] ),
 			};
-			const children = this.resolveTutoDescs( desc.children, tutoFiles, baseTutoDir, descResolved );
+			const children = this.resolveTutoDescs( desc.children, tutoFiles, baseTutoDir );
 			if ( !isEmpty( children ) ) {
 				descResolved.children = children;
 			}
@@ -144,7 +139,7 @@ export class TutorialsIndex extends AbstractComponent<Application> {
 		} );
 	}
 
-	public static getFromApp( app: Application ): TutorialsIndex {
+	public static getFromApp( app: Application ): TutorialsScannerComponent {
 		const comp = app.getComponent( this.componentName );
 		if ( !( comp instanceof this ) ) {
 			throw new Error();
