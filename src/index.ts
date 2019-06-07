@@ -4,7 +4,7 @@ import { TutorialsConverterComponent } from './components/tutorials-converter-co
 import { TutorialsRendererComponent } from './components/tutorials-renderer-component';
 import { TutorialsScannerComponent } from './components/tutorials-scanner-component';
 
-export default ( pluginHost: PluginHost ) => {
+export = ( pluginHost: PluginHost ) => {
 	const app = pluginHost.owner;
 
 	app.addComponent( TutorialsScannerComponent.componentName, new TutorialsScannerComponent( app ) );
