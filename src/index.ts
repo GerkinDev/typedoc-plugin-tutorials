@@ -1,10 +1,10 @@
 import { PluginHost } from 'typedoc/dist/lib/utils';
 
 import { TutorialsConverterComponent } from './components/tutorials-converter-component';
-import { TutorialsScannerComponent } from './components/tutorials-scanner-component';
 import { TutorialsRendererComponent } from './components/tutorials-renderer-component';
+import { TutorialsScannerComponent } from './components/tutorials-scanner-component';
 
-export = ( pluginHost: PluginHost ) => {
+export default ( pluginHost: PluginHost ) => {
 	const app = pluginHost.owner;
 
 	app.addComponent( TutorialsScannerComponent.componentName, new TutorialsScannerComponent( app ) );

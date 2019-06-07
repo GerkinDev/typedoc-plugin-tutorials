@@ -1,6 +1,7 @@
 import { assign, Dictionary, isEmpty, isNil } from 'lodash';
 import { dirname, relative } from 'path';
 
+import { Application } from 'typedoc/dist/lib/application';
 import { PageEvent } from 'typedoc/dist/lib/output/events';
 import { NavigationItem } from 'typedoc/dist/lib/output/models/NavigationItem';
 import { UrlMapping } from 'typedoc/dist/lib/output/models/UrlMapping';
@@ -19,6 +20,7 @@ export abstract class APage implements IPage {
 		public readonly title: string,
 		public readonly url: string,
 		public readonly template: string,
+		protected readonly app: Application,
 		public readonly parent?: IPage,
 		private readonly navItemTransform?: ( page: PageEvent, navItem: NavigationItem ) => NavigationItem,
 	) {

@@ -1,16 +1,14 @@
+import { readdirSync } from 'fs';
+import { Dictionary, every, isEmpty, isPlainObject, isString, isUndefined, mapValues, transform, values } from 'lodash';
+import { basename, extname, resolve } from 'path';
+
 import { Application } from 'typedoc/dist/lib/application';
 import { AbstractComponent, Component, Option } from 'typedoc/dist/lib/utils';
-import { TutorialIndex } from './../models/tutorial-index';
-
-import { readdirSync } from 'fs';
-import { assign, cloneDeep, Dictionary, every, isEmpty, isPlainObject, isString, isUndefined, mapKeys, mapValues, omitBy, pick, transform, values } from 'lodash';
-import { basename, extname, resolve } from 'path';
-import { UrlMapping } from 'typedoc/dist/lib/output/models/UrlMapping';
 import { ParameterHint, ParameterType } from 'typedoc/dist/lib/utils/options/declaration';
-import { inspect } from 'util';
+
 import { IPage } from '../models/i-page';
-import { Tutorial } from '../models/tutorial';
 import { PLUGIN_NAME } from '../utils';
+import { TutorialIndex } from './../models/tutorial-index';
 
 interface IInputDescription {
 	title: string;
@@ -77,7 +75,7 @@ export class TutorialsScannerComponent extends AbstractComponent<Application> {
 		}
 		this.tutorialFiles = readdirSync( this.tutorialsDirectory );
 		const tutoDescsResolved = TutorialsScannerComponent.resolveTutoDescs( this.tutorialsMap, this.tutorialFiles, this.tutorialsDirectory );
-		this._index = new TutorialIndex( tutoDescsResolved );
+		this._index = new TutorialIndex( tutoDescsResolved, this.application );
 		this.tutorialsFlattened = this.flattenTree();
 	}
 

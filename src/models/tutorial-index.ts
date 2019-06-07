@@ -1,5 +1,7 @@
 import { assign, Dictionary, forEach, values } from 'lodash';
 
+import { Application } from 'typedoc/dist/lib/application';
+
 import { IDescriptionResolved } from '../components/tutorials-scanner-component';
 import { APage } from './a-page';
 import { IPage } from './i-page';
@@ -12,9 +14,9 @@ export interface ITutorialTreeItem {
 	children?: ITutorialTreeItem[];
 }
 export class TutorialIndex extends APage {
-	public constructor( tutorials: Dictionary<IDescriptionResolved> ) {
-		super( 'Tutorial index', 'tutorials/index.html', 'tutorial-index.hbs', undefined, ( page, nav ) => assign( nav, { isVisible: true } ) );
-		forEach( tutorials, ( tutorial, relativePath ) => new Tutorial( tutorial, this, relativePath ) );
+	public constructor( tutorials: Dictionary<IDescriptionResolved>, app: Application ) {
+		super( 'Tutorial index', 'tutorials/index.html', 'tutorial-index.hbs', app, undefined, ( page, nav ) => assign( nav, { isVisible: true } ) );
+		forEach( tutorials, ( tutorial, relativePath ) => new Tutorial( tutorial, this, relativePath, app ) );
 	}
 
 	private static asSimpleTree( page: IPage ): ITutorialTreeItem[] | undefined {

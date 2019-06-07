@@ -1,6 +1,6 @@
 import { Dictionary } from 'lodash';
-import { PageEvent } from 'typedoc/dist/lib/output/events';
 
+import { PageEvent } from 'typedoc/dist/lib/output/events';
 import { NavigationItem } from 'typedoc/dist/lib/output/models/NavigationItem';
 import { UrlMapping } from 'typedoc/dist/lib/output/models/UrlMapping';
 

@@ -14,7 +14,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "rimraf dist/* && tsc -p tsconfig.json",
     "build:watch": "npm run build -- --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -28,19 +28,24 @@
     "typedoc"
   ],
   "peerDependencies": {
-    "handlebars": "^4.0.6",
-    "lodash": "^4.17.0",
-    "typedoc": "^0.14.0"
+    "handlebars": "^4.1.2",
+    "lodash": "^4.17.11",
+    "typedoc": "^0.14.2"
   },
   "devDependencies": {
     "@diaspora/dev-tslint": "^1.2.0",
-    "@types/handlebars": "^4.0.38",
-    "@types/lodash": "^4.14.123",
-    "@types/node": "^11.13.5",
-    "handlebars": "^4.0.6",
-    "tslint": "^5.16.0",
+    "@types/handlebars": "^4.1.0",
+    "@types/he": "^1.1.0",
+    "@types/lodash": "^4.14.134",
+    "@types/node": "^12.0.7",
+    "handlebars": "^4.1.2",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.17.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typedoc": "^0.14.0",
-    "typescript": "^3.4.2"
+    "typedoc": "^0.14.2",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "he": "^1.2.0"
   }
 }
