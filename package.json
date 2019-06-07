@@ -43,7 +43,8 @@
     "tslint": "^5.17.0",
     "tslint-eslint-rules": "^5.4.0",
     "typedoc": "^0.14.2",
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.1",
+    "lodash": "^4.17.11"
   },
   "dependencies": {
     "he": "^1.2.0"
