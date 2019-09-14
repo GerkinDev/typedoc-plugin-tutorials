@@ -86,6 +86,8 @@ export class TutorialsRendererComponent extends ContextAwareRendererComponent {
 		const allRefsWithChildren = TutorialsRendererComponent.getAllReflectionsWithChildren( reflection );
 		const allTutoTags = allRefsWithChildren
 			.reduce( ( acc, ref ) => acc.concat( TutorialsRendererComponent.getTutorialTags( ref ) ), [] as ILeveledTag[] );
+
+		// Replace `@tutorial` doc comments
 		allTutoTags
 			.forEach( ( { tag, level } ) => {
 				if ( ( tag as any ).resolved ) {
@@ -94,7 +96,34 @@ export class TutorialsRendererComponent extends ContextAwareRendererComponent {
 				( tag as any ).resolved = true;
 				tag.text = this.convertCommentTagText( tag.text, level );
 			} );
+		// Replace `[[tutorial:some-tutorial]] doc content.
+		allRefsWithChildren
+			.forEach( declarationReflection => {
+				if ( declarationReflection.comment ) {
+					if ( declarationReflection.comment.tags ) {
+						declarationReflection.comment.tags.forEach( tag => {
+							tag.text = this.replaceTutoLinkTags( tag.text );
+						} );
+					}
+					declarationReflection.comment.text = this.replaceTutoLinkTags( declarationReflection.comment.text );
+					declarationReflection.comment.shortText = this.replaceTutoLinkTags( declarationReflection.comment.shortText );
+					if ( declarationReflection.comment.returns ) {
+						declarationReflection.comment.returns = this.replaceTutoLinkTags( declarationReflection.comment.returns );
+					}
+				}
+			} );
+	}
 
+	private replaceTutoLinkTags( text: string ) {
+		return text.replace( /\[\[tutorial:([^\]]+)\]\]/g, ( fullMatch, tutoId ) => {
+			const tuto = this.tutorialScanner.allTutorials[tutoId];
+			if ( !tuto ) {
+				// tslint:disable-next-line: no-console
+				console.warn( `Missing or invalid tutorial page for id "${tutoId}"` );
+				return fullMatch;
+			}
+			return `<a href="${ this.getRelativeUrl( tuto.url ) }">${tuto.title} <sup>tutorial</sup></a>`;
+		} );
 	}
 
 	private convertCommentTagText( tagText: string, level: number ): string {
