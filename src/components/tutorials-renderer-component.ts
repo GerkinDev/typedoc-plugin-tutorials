@@ -136,13 +136,13 @@ export class TutorialsRendererComponent extends ContextAwareRendererComponent {
 			throw new Error( `Misformatted comment "${tagText}"` );
 		}
 		const tutoSummary = tagText.replace( tutoId, '' ).trim();
-		const tuto = this.tutorialScanner.allTutorials[`${this.tutorialScanner.index.path}/${tutoId}`];
+		const tuto = this.tutorialScanner.allTutorials[tutoId];
 		if ( !tuto || !( tuto instanceof Tutorial ) ) {
 			// tslint:disable-next-line: no-console
 			console.warn( `Missing or invalid tutorial page for id "${tutoId}"` );
 			return Tutorial.makeDefaultTagLink( tutoId, level, tutoSummary );
 		} else {
-			return tuto.makeTagLink( tutoUrl => this.getRelativeUrl( tutoUrl ), level, tutoSummary );
+			return tuto.makeTagLink( this.getRelativeUrl.bind( this ), level, tutoSummary );
 		}
 	}
 

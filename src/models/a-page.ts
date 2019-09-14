@@ -19,6 +19,7 @@ export abstract class APage implements IPage {
 	public constructor(
 		public readonly title: string,
 		public readonly url: string,
+		public readonly key: string,
 		public readonly template: string,
 		protected readonly app: Application,
 		public readonly parent?: IPage,

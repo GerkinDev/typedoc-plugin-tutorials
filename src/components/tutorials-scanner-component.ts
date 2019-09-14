@@ -93,7 +93,7 @@ export class TutorialsScannerComponent extends AbstractComponent<Application> {
 		return transform(
 			page.getChildren(),
 			( subAcc, subPage ) => {
-				subAcc[subPage.path] = subPage;
+				subAcc[subPage.key] = subPage;
 
 				if ( subPage.hasChildren() ) {
 					return this.flattenTreeRec( subPage, subAcc );

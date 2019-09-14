@@ -15,7 +15,7 @@ export interface ITutorialTreeItem {
 }
 export class TutorialIndex extends APage {
 	public constructor( tutorials: Dictionary<IDescriptionResolved>, app: Application ) {
-		super( 'Tutorial index', 'tutorials/index.html', 'tutorial-index.hbs', app, undefined, ( page, nav ) => assign( nav, { isVisible: true } ) );
+		super( 'Tutorial index', 'tutorials/index.html', 'index', 'tutorial-index.hbs', app, undefined, ( page, nav ) => assign( nav, { isVisible: true } ) );
 		forEach( tutorials, ( tutorial, relativePath ) => new Tutorial( tutorial, this, relativePath, app ) );
 	}
 

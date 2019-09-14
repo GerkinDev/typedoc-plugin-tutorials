@@ -17,6 +17,7 @@ export class Tutorial extends APage {
 		super(
 			config.title,
 			[ parent.path, ...( config.children ? [relativeName, 'index.html'] : [`${relativeName}.html`] ) ].join( '/' ),
+			relativeName,
 			'index.hbs',
 			app,
 			parent,
@@ -58,7 +59,7 @@ export class Tutorial extends APage {
 		const content = readFileSync( this.source, 'utf-8' );
 
 		const subMenu = this.hasChildren() ? Object.values( this.getChildren() )
-				.map( subTuto => ` * [${subTuto.title}](#)` )
+				.map( subTuto => ` * [${subTuto.title}](${relative( dirname( this.url ), subTuto.url )})` )
 				.join( '\n' ) : false;
 
 		const fullContent = subMenu ?

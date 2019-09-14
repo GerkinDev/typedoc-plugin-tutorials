@@ -6,6 +6,7 @@ import { UrlMapping } from 'typedoc/dist/lib/output/models/UrlMapping';
 
 export interface IPage {
 	readonly title: string;
+	readonly key: string;
 	readonly path: string;
 	readonly url: string;
 
