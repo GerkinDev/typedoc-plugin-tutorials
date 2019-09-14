@@ -3,10 +3,8 @@
 		<li>
 			{{#if description}}
 				<details open>
-					<summary><h{{level}}><a href="{{relativeURL dest}}" title="{{title}}">{{{title}}}</a></h{{level}}></summary>
-					{{#markdown}}
-					{{{description}}}
-					{{/markdown}}
+					<summary><h{{../level}}><a href="{{relativeURL dest}}" title="{{title}}">{{{title}}}</a></h{{../level}}></summary>
+					{{#markdown}}{{{description}}}{{/markdown}}
 				</details>
 			{{else}}
 				<h{{../level}}><a href="{{relativeURL dest}}" title="{{title}}">{{{title}}}</a></h{{../level}}>
