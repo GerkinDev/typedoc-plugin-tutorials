@@ -30,7 +30,7 @@
   "peerDependencies": {
     "handlebars": "^4.2.0",
     "lodash": "^4.17.15",
-    "typedoc": "^0.15.0"
+    "typedoc": "^0.22.0"
   },
   "devDependencies": {
     "@diaspora/dev-tslint": "^1.2.0",
@@ -42,7 +42,7 @@
     "rimraf": "^3.0.0",
     "tslint": "^5.20.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typedoc": "^0.15.0",
+    "typedoc": "^0.22.0",
     "typescript": "^3.6.3",
     "lodash": "^4.17.15"
   },
