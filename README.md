@@ -1,5 +1,9 @@
 # Typedoc-plugin-tutorials
 
+__*Important notice:* This plugin is deprecated. Please use [@knodes/typedoc-plugin-pages](https://www.npmjs.com/package/@knodes/typedoc-plugin-pages) instead__
+
+---
+
 This typedoc plugin allows you to create tutorials for your typedoc documentation. Those tutorial pages will be generated using your theme. The tutorial index is added as a doc page visible in the global menu of your documentation. This page generates a basic index page containing all your tutorials.
 
 Example generated tutorials page: https://gerkindev.github.io/vuejs-datatable/tutorials/index.html
